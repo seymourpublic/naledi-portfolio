@@ -13,7 +13,7 @@ const Hero = () => {
             transition={{ duration: 0.8 }}
           >
             <h1>Hi, I'm <span className="highlight">Naledi Sandamela</span></h1>
-            <h3>Software Engineer & Data Specialist</h3>
+            <h3>Aspiring Software Engineer & Data Specialist</h3>
             <p>I build web applications, design APIs, and analyze data to solve real-world problems.</p>
             <div className="hero-buttons">
               <a href="#contact" className="btn">Contact Me</a>
@@ -27,6 +27,8 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             {/* You can add a profile image here */}
+            {/* <img src="path/to/your/image.jpg" alt="Profile" /> */}
+            {/* Placeholder for profile image */}
             <div className="profile-placeholder">NS</div>
           </motion.div>
         </div>

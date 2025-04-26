@@ -23,7 +23,7 @@ const About = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <p>
-              I'm a Software Engineer and Data Specialist with experience in building RESTful APIs, 
+              I'm an aspiring Software Engineer and Data Specialist with experience in building RESTful APIs, 
               interactive dashboards, and data pipelines. My focus is on creating efficient, 
               scalable applications that solve real business problems.
             </p>
@@ -46,11 +46,11 @@ const About = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="stat-item">
-              <div className="stat-number">3+</div>
+              <div className="stat-number">1+</div>
               <div className="stat-label">Years of Experience</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number">5+</div>
+              <div className="stat-number">6+</div>
               <div className="stat-label">Completed Projects</div>
             </div>
             <div className="stat-item">

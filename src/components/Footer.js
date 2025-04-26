@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaLinkedinIn, FaGithub, FaTwitter, FaEnvelope } from 'react-icons/fa';
+import { FaLinkedinIn, FaGithub, FaTwitter, FaEnvelope, FaCodepen } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -22,14 +22,14 @@ const Footer = () => {
             </ul>
           </div>
           <div className="footer-social">
-            <a href="#" className="social-icon">
+            <a href="https://www.linkedin.com/in/naledi-s-0777a1210/" className="social-icon">
               <FaLinkedinIn />
             </a>
-            <a href="#" className="social-icon">
+            <a href="https://github.com/seymourpublic" className="social-icon">
               <FaGithub />
             </a>
-            <a href="#" className="social-icon">
-              <FaTwitter />
+            <a href="https://codepen.io/seymourpublic" className="social-icon">
+              <FaCodepen />
             </a>
             <a href="mailto:naledisandamela@gmail.com" className="social-icon">
               <FaEnvelope />
