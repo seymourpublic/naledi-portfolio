@@ -18,6 +18,7 @@ const Hero = () => {
             <div className="hero-buttons">
               <a href="#contact" className="btn">Contact Me</a>
               <a href="#projects" className="btn btn-outline">View Projects</a>
+              <a href="NalediSandamelaCV.pdf" download className="btn">Download CV</a>
             </div>
           </motion.div>
           <motion.div 
@@ -27,14 +28,23 @@ const Hero = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             {/* You can add a profile image here */}
-            {/* <img src="path/to/your/image.jpg" alt="Profile" /> */}
+            
             {/* Placeholder for profile image */}
-            <div className="profile-placeholder">NS</div>
+            <div className="profile-placeholder">
+               <img src="/avatar.png" alt="Profile" className="profile-image" />
+            </div>
           </motion.div>
         </div>
       </div>
 
       <style jsx>{`
+        .profile-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+          }
+          
         .hero {
           min-height: 100vh;
           display: flex;

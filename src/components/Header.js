@@ -76,7 +76,7 @@ const Header = () => {
         .logo {
           font-size: 1.5rem;
           font-weight: 700;
-          color: var(--primary-color);
+          color: var(--text-dark);
         }
 
         .navbar {
