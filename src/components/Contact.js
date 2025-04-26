@@ -18,24 +18,39 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to a server
-    console.log(formData);
-    // For demo purposes, just setting submitted state
-    setIsSubmitted(true);
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
-    // Reset submit state after 3 seconds
+  
+    try {
+      const response = await fetch('https://formspree.io/f/xpwdwdkr', {  
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+  
+      if (response.ok) {
+        console.log('Message sent successfully');
+        setIsSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        console.error('Form submission error');
+      }
+    } catch (error) {
+      console.error('Form submission error', error);
+    }
+  
     setTimeout(() => {
       setIsSubmitted(false);
     }, 3000);
   };
+  
 
   return (
     <section id="contact" className="contact">
