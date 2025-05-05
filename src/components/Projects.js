@@ -75,7 +75,7 @@ const Projects = () => {
         "Built with CORS support for frontend integration",
         "Integrated with Firebase Storage for reliable cloud storage"
       ],
-      demoUrl: "https://random-data-api.netlify.app/",
+      demoUrl: "https://firedrop-api.onrender.com",
       githubUrl: "https://github.com/seymourpublic/firedrop-api",
       apiDocs: true
     },
@@ -90,7 +90,7 @@ const Projects = () => {
         "Developed support for bulk data generation",
         "Designed for easy integration with testing environments"
       ],
-      demoUrl: "https://random-data-api-demo.onrender.com",
+      demoUrl: "https://random-data-api-r4pp.onrender.com/api/users/random",
       githubUrl: "https://github.com/seymourpublic/random-data-api",
       apiDocs: true
     },
