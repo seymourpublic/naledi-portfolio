@@ -32,11 +32,15 @@ const Skills = () => {
   const certifications = [
     {
       name: "AWS Certified Cloud Practitioner",
-      date: "Apr 2025"
+      date: "Apr 2025",
+      badgeUrl: "aws-certified-cloud-practitioner.png",
+      credlyUrl: "https://www.credly.com/badges/592e7b34-a83d-4c3b-b64e-0ae3aaaba734/public_url"
     },
     {
       name: "Google Data Analytics Professional Certificate",
-      date: "July 2022"
+      date: "July 2022",
+      badgeUrl: "google-data-analytics-professional-certificate.2.png", 
+      credlyUrl: "https://www.credly.com/badges/6cc695ca-a96a-4c2c-b819-c01ada593884/public_url"
     }
   ];
 
@@ -91,11 +95,13 @@ const Skills = () => {
             <div className="cert-cards">
               {certifications.map((cert, index) => (
                 <div key={index} className="cert-card">
-                  <div className="cert-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
+                  {cert.credlyUrl ? (
+                    <a href={cert.credlyUrl} target="_blank" rel="noopener noreferrer">
+                    <img src={cert.badgeUrl} alt={cert.name} className="cert-badge" />
+                      </a>
+                      ) : (
+                    <img src={cert.badgeUrl} alt={cert.name} className="cert-badge" />
+                  )}
                   <div className="cert-content">
                     <h4>{cert.name}</h4>
                     <p>{cert.date}</p>
