@@ -4,6 +4,16 @@ import { motion } from 'framer-motion';
 const Experience = () => {
   const experiences = [
     {
+      title: "Solutions Engineering Intern",
+      company: "InfoBip",
+      location: "Bryanston, Gauteng",
+      period: "July 2025 – Present",
+      responsibilities: [
+        "Worked on understanding customers’ businesses deeply to identify and demonstrate how Infobip’s products and services can help evolve their operations, including designing innovative, tailored solutions and conducting demos, POCs, and technical scoping.",
+        "Configure, customize, and implement Infobip solutions with precise technical documentation, ensuring projects meet deadlines, budgets, and customer expectations, alongside providing consulting, enablement, and creating conversational workflows."
+      ]
+    },
+    {
       title: "BI & Data Intern",
       company: "EPPF",
       location: "Bryanston, Gauteng",
