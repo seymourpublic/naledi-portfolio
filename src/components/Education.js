@@ -1,134 +1,183 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const Education = () => {
-  const education = [
-    {
-      degree: "B.Sc. Honours Information Technology with Software Engineering",
-      institution: "Eduvos",
-      location: "Potchefstroom, North-West",
-      period: "Feb 2023 - Dec 2023",
-      highlights: [
-        "Golden Key International Honour Society Member: Top 15% of the class",
-        "Data Mining Project: Analyzed data to predict outcomes such as life expectancy and diabetes using Python.",
-        "Job Board Web Application: Built a job board for IT graduates using React, Node.js, MongoDB, and microservice architecture. Included features for posting and applying to job listings, utilizing JavaScript, Apache Kafka, MongoDB, and Swagger."
-      ]
-    },
-    {
-      degree: "B.Sc. Information Technology",
-      institution: "NWU",
-      location: "Potchefstroom, North-West",
-      period: "Feb 2019 - Dec 2022",
-      highlights: []
-    }
-  ];
+const ease = [0.22, 1, 0.36, 1];
 
-  return (
-    <section id="education" className="education">
-      <div className="container">
-        <motion.h2 
-          className="section-title text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          Education
-        </motion.h2>
-        <div className="education-cards">
-          {education.map((edu, index) => (
-            <motion.div 
-              key={index} 
-              className="education-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-            >
-              <div className="card-header">
-                <h3>{edu.degree}</h3>
-                <div className="institution-info">
-                  <span>{edu.institution}</span>
-                  <span className="location">{edu.location}</span>
-                </div>
-                <div className="period">{edu.period}</div>
+const education = [
+  {
+    degree: 'B.Sc. Honours IT with Software Engineering',
+    institution: 'Eduvos',
+    location: 'Potchefstroom, North-West',
+    period: 'Feb 2023 – Dec 2023',
+    highlights: [
+      'Golden Key International Honour Society — Top 15% of the class.',
+      'Data Mining Project: Predicted life expectancy and diabetes outcomes using Python.',
+      'Job Board Web App: Built for IT graduates using React, Node.js, MongoDB, Apache Kafka, and Swagger in a microservice architecture.',
+    ],
+  },
+  {
+    degree: 'B.Sc. Information Technology',
+    institution: 'NWU',
+    location: 'Potchefstroom, North-West',
+    period: 'Feb 2019 – Dec 2022',
+    highlights: [],
+  },
+];
+
+const Education = () => (
+  <section id="education" className="education">
+    <div className="container">
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.8, ease }}
+        className="edu-header"
+      >
+        <span className="section-tag">Academic</span>
+        <h2 className="edu-heading">Education</h2>
+      </motion.div>
+
+      <div className="edu-list">
+        {education.map((edu, i) => (
+          <motion.div
+            key={i}
+            className="edu-entry"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.7, ease, delay: i * 0.12 }}
+          >
+            <div className="edu-top">
+              <div className="edu-left">
+                <h3 className="edu-degree">{edu.degree}</h3>
+                <span className="edu-institution">{edu.institution}</span>
               </div>
-              {edu.highlights.length > 0 && (
-                <div className="highlights">
-                  <h4>Highlights:</h4>
-                  <ul>
-                    {edu.highlights.map((highlight, idx) => (
-                      <li key={idx}>{highlight}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
+              <div className="edu-right">
+                <span className="edu-period">{edu.period}</span>
+                <span className="edu-location">{edu.location}</span>
+              </div>
+            </div>
+            {edu.highlights.length > 0 && (
+              <ul className="edu-highlights">
+                {edu.highlights.map((h, j) => (
+                  <li key={j}>{h}</li>
+                ))}
+              </ul>
+            )}
+          </motion.div>
+        ))}
       </div>
+    </div>
 
-      <style jsx>{`
-        .education {
-          background-color: var(--white);
-        }
+    <style jsx>{`
+      .education {
+        background: var(--bg-2);
+        border-bottom: 1px solid var(--border);
+      }
 
-        .education-cards {
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-          max-width: 800px;
-          margin: 0 auto;
-        }
+      .edu-header {
+        margin-bottom: 4rem;
+      }
 
-        .education-card {
-          background-color: var(--background-light);
-          border-radius: 8px;
-          padding: 25px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-          transition: transform 0.3s ease;
-        }
+      .edu-heading {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
 
-        .education-card:hover {
-          transform: translateY(-5px);
-        }
+      .edu-list {
+        border-top: 1px solid var(--border);
+      }
 
-        .card-header {
-          margin-bottom: 1rem;
-        }
+      .edu-entry {
+        padding: 2.75rem 0;
+        border-bottom: 1px solid var(--border);
+      }
 
-        .institution-info {
-          display: flex;
-          justify-content: space-between;
-          margin: 0.5rem 0;
-          color: var(--text-dark);
-          font-weight: 500;
-        }
+      .edu-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+      }
 
-        .location {
-          color: var(--text-light);
-          font-size: 0.9rem;
-        }
+      .edu-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
 
-        .period {
-          color: var(--primary-color);
-          font-weight: 500;
-        }
+      .edu-degree {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0;
+        line-height: 1.3;
+      }
 
-        .highlights h4 {
-          margin-bottom: 0.5rem;
-        }
+      .edu-institution {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
 
-        .highlights ul {
-          margin-left: 20px;
-        }
+      .edu-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.25rem;
+        flex-shrink: 0;
+      }
 
-        .highlights li {
-          margin-bottom: 0.5rem;
+      .edu-period {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-muted);
+      }
+
+      .edu-location {
+        font-size: 0.74rem;
+        color: var(--text-dim);
+      }
+
+      .edu-highlights {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        padding-left: 0;
+      }
+
+      .edu-highlights li {
+        font-size: 0.87rem;
+        color: var(--text-muted);
+        line-height: 1.75;
+        padding-left: 1.2rem;
+        position: relative;
+      }
+
+      .edu-highlights li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--text-dim);
+        font-size: 0.72rem;
+        top: 0.1rem;
+      }
+
+      @media (max-width: 640px) {
+        .edu-right {
+          align-items: flex-start;
         }
-      `}</style>
-    </section>
-  );
-};
+      }
+    `}</style>
+  </section>
+);
 
 export default Education;

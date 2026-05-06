@@ -1,346 +1,561 @@
 import React, { useState } from 'react';
-import ProjectCard from './ProjectCard';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const ease = [0.22, 1, 0.36, 1];
+
+const CARD_GRADIENTS = [
+  'linear-gradient(135deg, #0F0E14 0%, #13101E 100%)',
+  'linear-gradient(135deg, #0E0F14 0%, #10131C 100%)',
+  'linear-gradient(135deg, #0E1410 0%, #10181A 100%)',
+  'linear-gradient(135deg, #14100E 0%, #1C1410 100%)',
+  'linear-gradient(135deg, #0E1314 0%, #101A1C 100%)',
+  'linear-gradient(135deg, #14120E 0%, #1C1610 100%)',
+  'linear-gradient(135deg, #130E14 0%, #180E1C 100%)',
+  'linear-gradient(135deg, #0E140E 0%, #10180F 100%)',
+];
+
+const FILTERS = ['All', 'Frontend', 'Backend', 'Data'];
+
+const projects = [
+  {
+    title: 'BMO Virtual AI Assistant',
+    category: 'Frontend',
+    description: 'A conversational AI assistant with voice capability, allowing users to interact naturally via the Web Speech API.',
+    technologies: ['Next.js', 'Apollo Client', 'React', 'GraphQL', 'Tailwind CSS'],
+    features: [
+      'Speech-to-Text via Web Speech API for natural voice interaction',
+      'Content filtering and robust search functionality',
+      'Responsive design for optimal experience across devices',
+      'SEO-optimised page structure with dynamic metadata',
+    ],
+    demoUrl: 'https://bmo-lcd5.vercel.app/',
+    githubUrl: 'https://github.com/seymourpublic/BMO',
+  },
+  {
+    title: 'VersaBlog – Frontend',
+    category: 'Frontend',
+    description: 'The public-facing frontend of the VersaBlog platform, offering a dynamic reading experience with content filtering and search.',
+    technologies: ['Next.js', 'Apollo Client', 'React', 'GraphQL', 'Tailwind CSS'],
+    features: [
+      'Dynamic blog frontend with real-time content updates via GraphQL',
+      'Content filtering and robust search functionality',
+      'SEO-optimised page structure with dynamic metadata',
+    ],
+    demoUrl: 'https://versablogdemo.netlify.app/',
+    githubUrl: 'https://github.com/seymourpublic/versa-blog-frontend',
+  },
+  {
+    title: 'VersaBlog – Admin Dashboard',
+    category: 'Frontend',
+    description: 'A powerful admin interface for the VersaBlog platform, enabling content creators to manage all aspects of their blog.',
+    technologies: ['React', 'Apollo Client', 'GraphQL', 'React Hook Form', 'Draft.js'],
+    features: [
+      'Rich text editor for blog post creation and editing',
+      'Category and tag management system',
+      'Post status control (draft, published, archived)',
+    ],
+    demoUrl: 'https://versa-blog-admin.netlify.app/',
+    githubUrl: 'https://github.com/seymourpublic/my-blog-admin',
+  },
+  {
+    title: 'VersaBlog – Backend API',
+    category: 'Backend',
+    description: 'The GraphQL API powering the VersaBlog platform, handling data management, authentication, and content delivery.',
+    technologies: ['Node.js', 'Express.js', 'GraphQL', 'MongoDB', 'Mongoose', 'JWT'],
+    features: [
+      'Modular GraphQL API with Apollo Server',
+      'Secure authentication system with JWT',
+      'Scalable architecture with separation of concerns',
+    ],
+    demoUrl: 'https://versablog-backend.onrender.com/graphql/v1',
+    githubUrl: 'https://github.com/seymourpublic/VersaBlog-backend',
+    apiDocs: true,
+  },
+  {
+    title: 'Budgeting App',
+    category: 'Frontend',
+    description: 'A responsive budgeting application to help users manage finances, track income and expenses, and set savings goals.',
+    technologies: ['React', 'Tailwind CSS', 'Framer Motion', 'Chart.js', 'react-i18next'],
+    features: [
+      'Income and expense tracking with Pie and Line Chart visualisations',
+      'Savings goals with progress tracking',
+      'Multi-language support and CSV/PDF export',
+    ],
+    demoUrl: 'https://cashcanvas.netlify.app/',
+    githubUrl: 'https://github.com/seymourpublic/budgeting-app',
+  },
+  {
+    title: 'FireDrop API',
+    category: 'Backend',
+    description: 'A lightweight and scalable file upload API built for seamless file management and cloud storage.',
+    technologies: ['Node.js', 'Express.js', 'Firebase Storage', 'REST API'],
+    features: [
+      'File upload supporting multiple types with 50MB limit',
+      'Automatic thumbnail generation for images',
+      'Integrated with Firebase Storage for cloud storage',
+    ],
+    demoUrl: 'https://firedrop-api.onrender.com',
+    githubUrl: 'https://github.com/seymourpublic/firedrop-api',
+    apiDocs: true,
+  },
+  {
+    title: 'Random Data Generator API',
+    category: 'Backend',
+    description: 'An API providing fake data for testing and development, supporting various data types in bulk.',
+    technologies: ['Node.js', 'Express.js', 'REST API'],
+    features: [
+      'Random user profiles, transactions, emails, and addresses',
+      'Bulk data generation support',
+      'Designed for easy testing environment integration',
+    ],
+    demoUrl: 'https://random-data-api-r4pp.onrender.com/api/users/random',
+    githubUrl: 'https://github.com/seymourpublic/random-data-api',
+    apiDocs: true,
+  },
+  {
+    title: 'Web Scraper & Data Analysis',
+    category: 'Data',
+    description: 'A Python-based web scraper for collecting and analysing product pricing data across multiple sources.',
+    technologies: ['Python', 'Data Analysis', 'Web Scraping'],
+    features: [
+      'Scrapes and stores product prices from multiple websites',
+      'Visualises pricing trends and fluctuations over time',
+    ],
+    githubUrl: 'https://github.com/seymourpublic/scraper',
+  },
+];
+
+const ProjectCard = ({ project, index, globalIndex }) => {
+  const [demoOpen, setDemoOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const microlinkUrl = project.demoUrl && !project.apiDocs
+    ? `https://api.microlink.io/?url=${encodeURIComponent(project.demoUrl)}&screenshot=true&meta=false&embed=screenshot.url`
+    : null;
+
+  return (
+    <motion.div
+      className="proj-card"
+      initial={{ opacity: 0, y: 28 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.65, ease, delay: index * 0.08 }}
+      layout
+    >
+      <div className="proj-preview" style={{ background: CARD_GRADIENTS[globalIndex % CARD_GRADIENTS.length] }}>
+        {microlinkUrl && !imgError && (
+          <img
+            src={microlinkUrl}
+            alt={`${project.title} preview`}
+            className="proj-screenshot"
+            onError={() => setImgError(true)}
+            loading="lazy"
+          />
+        )}
+        <span className="proj-num-bg">{String(globalIndex + 1).padStart(2, '0')}</span>
+        <span className="proj-category-tag">{project.category}</span>
+      </div>
+
+      <div className="proj-body">
+        <h3 className="proj-title">{project.title}</h3>
+        <p className="proj-desc">{project.description}</p>
+        <div className="proj-tags">
+          {project.technologies.map((t, i) => (
+            <span key={i} className="proj-tag">{t}</span>
+          ))}
+        </div>
+        <ul className="proj-features">
+          {project.features.map((f, i) => (
+            <li key={i}>{f}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="proj-footer">
+        {project.demoUrl && (
+          <button className="proj-btn" onClick={() => setDemoOpen(!demoOpen)}>
+            {demoOpen ? 'Hide Demo' : (project.apiDocs ? 'View API' : 'Live Demo')}
+          </button>
+        )}
+        {project.githubUrl && (
+          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="proj-link">
+            View Code →
+          </a>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {demoOpen && project.demoUrl && (
+          <motion.div
+            className="proj-demo"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease }}
+          >
+            <div className="proj-demo-bar">
+              <span>{project.apiDocs ? 'API Docs' : 'Live Demo'}</span>
+              <button onClick={() => setDemoOpen(false)}>✕</button>
+            </div>
+            <iframe
+              src={project.demoUrl}
+              title={project.title}
+              className="proj-iframe"
+              sandbox="allow-scripts allow-same-origin"
+              loading="lazy"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style jsx>{`
+        .proj-card {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          display: flex;
+          flex-direction: column;
+          transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+        }
+
+        .proj-card:hover {
+          border-color: var(--border-strong);
+          background: var(--surface-hover);
+          transform: translateY(-4px);
+        }
+
+        .proj-preview {
+          position: relative;
+          height: 160px;
+          overflow: hidden;
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          padding: 1.25rem;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .proj-screenshot {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center top;
+          filter: brightness(0.55);
+          transition: filter 0.3s ease;
+        }
+
+        .proj-card:hover .proj-screenshot {
+          filter: brightness(0.45);
+        }
+
+        .proj-num-bg {
+          position: absolute;
+          right: 1rem;
+          bottom: -0.75rem;
+          font-size: 6.5rem;
+          font-weight: 700;
+          color: rgba(255, 255, 255, 0.04);
+          line-height: 1;
+          letter-spacing: -0.04em;
+          user-select: none;
+          pointer-events: none;
+        }
+
+        .proj-category-tag {
+          font-size: 0.62rem;
+          font-weight: 600;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          background: rgba(255,255,255,0.06);
+          border: 1px solid var(--border);
+          padding: 0.25rem 0.7rem;
+          position: relative;
+          z-index: 1;
+        }
+
+        .proj-body {
+          padding: 1.75rem;
+          flex: 1;
+        }
+
+        .proj-title {
+          font-size: 1.15rem;
+          font-weight: 700;
+          color: var(--text);
+          margin-bottom: 0.75rem;
+          line-height: 1.3;
+        }
+
+        .proj-desc {
+          font-size: 0.84rem;
+          color: var(--text-muted);
+          line-height: 1.75;
+          margin-bottom: 1rem;
+        }
+
+        .proj-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .proj-tag {
+          font-size: 0.68rem;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          color: var(--text-muted);
+          background: rgba(255,255,255,0.04);
+          border: 1px solid var(--border);
+          padding: 0.22rem 0.6rem;
+        }
+
+        .proj-features {
+          list-style: none;
+          display: flex;
+          flex-direction: column;
+          gap: 0.45rem;
+        }
+
+        .proj-features li {
+          font-size: 0.8rem;
+          color: var(--text-muted);
+          line-height: 1.6;
+          padding-left: 1rem;
+          position: relative;
+        }
+
+        .proj-features li::before {
+          content: '→';
+          position: absolute;
+          left: 0;
+          color: var(--text-dim);
+          font-size: 0.7rem;
+        }
+
+        .proj-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem 1.75rem;
+          border-top: 1px solid var(--border);
+          gap: 1rem;
+          margin-top: auto;
+        }
+
+        .proj-btn {
+          font-family: 'Inter', sans-serif;
+          font-size: 0.72rem;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+          background: var(--text);
+          color: var(--bg);
+          border: 1px solid var(--text);
+          padding: 0.5rem 1.1rem;
+          cursor: pointer;
+          transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .proj-btn:hover {
+          background: transparent;
+          color: var(--text);
+        }
+
+        .proj-link {
+          font-size: 0.78rem;
+          font-weight: 500;
+          color: var(--text-muted);
+          transition: color 0.2s ease;
+        }
+
+        .proj-link:hover {
+          color: var(--text);
+        }
+
+        .proj-demo {
+          overflow: hidden;
+          border-top: 1px solid var(--border);
+        }
+
+        .proj-demo-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.65rem 1.25rem;
+          background: var(--bg-2);
+          border-bottom: 1px solid var(--border);
+        }
+
+        .proj-demo-bar span {
+          font-size: 0.68rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+        }
+
+        .proj-demo-bar button {
+          background: none;
+          border: none;
+          color: var(--text-muted);
+          cursor: pointer;
+          font-size: 0.85rem;
+          transition: color 0.2s ease;
+        }
+
+        .proj-demo-bar button:hover {
+          color: var(--text);
+        }
+
+        .proj-iframe {
+          width: 100%;
+          height: 400px;
+          border: none;
+          display: block;
+        }
+      `}</style>
+    </motion.div>
+  );
+};
 
 const Projects = () => {
-  // State to track which project demo is currently being shown
-  const [activeDemo, setActiveDemo] = useState(null);
+  const [activeFilter, setActiveFilter] = useState('All');
 
-  const projects = [
-    {
-      title: "VersaBlog – Frontend",
-      description: "The public-facing frontend of the VersaBlog platform, offering a dynamic reading experience with content filtering and search capabilities.",
-      technologies: ["Next.js", "Apollo Client", "React", "GraphQL", "Tailwind CSS"],
-      features: [
-        "Built dynamic blog frontend with real-time content updates via GraphQL",
-        "Implemented content filtering and robust search functionality",
-        "Created responsive design for optimal reading experience across devices",
-        "Developed SEO-optimized page structure with dynamic metadata",
-        "Integrated with backend GraphQL API for efficient data fetching"
-      ],
-      demoUrl: "https://versablogdemo.netlify.app/",
-      githubUrl: "https://github.com/seymourpublic/versa-blog-frontend"
-    },
-    {
-      title: "VersaBlog – Admin Dashboard",
-      description: "A powerful admin interface for the VersaBlog platform, allowing content creators to manage all aspects of their blog.",
-      technologies: ["React", "Apollo Client", "GraphQL", "React Hook Form", "Draft.js"],
-      features: [
-        "Developed comprehensive dashboard for content management",
-        "Created rich text editor for blog post creation and editing",
-        "Built category and tag management system",
-        "Implemented media library for image uploads and management",
-        "Added post status control (draft, published, archived)"
-      ],
-      demoUrl: "https://versa-blog-admin.netlify.app/",
-      githubUrl: "https://github.com/seymourpublic/my-blog-admin"
-    },
-    {
-      title: "VersaBlog – Backend API",
-      description: "The GraphQL API powering the VersaBlog platform, handling data management, authentication, and content delivery.",
-      technologies: ["Node.js", "Express.js", "GraphQL", "MongoDB", "Mongoose", "JWT"],
-      features: [
-        "Designed a modular GraphQL API with Apollo Server",
-        "Implemented MongoDB database integration with Mongoose",
-        "Created secure authentication system with JWT",
-        "Developed efficient resolvers for optimal query performance",
-        "Built scalable architecture with separation of concerns"
-      ],
-      demoUrl: "https://versablog-backend.onrender.com/graphql/v1",
-      githubUrl: "https://github.com/seymourpublic/VersaBlog-backend",
-      apiDocs: true
-    },
-    {
-      title: "Budgeting App",
-      description: "A modern, responsive budgeting application to help users manage finances, track income and expenses, and set savings goals.",
-      technologies: ["React", "Tailwind CSS", "Framer Motion", "Chart.js", "react-i18next"],
-      features: [
-        "Built income management system with detailed breakdown of multiple sources",
-        "Implemented expense tracking with category visualization using Pie and Line Charts",
-        "Developed savings goals feature with progress tracking and milestone notifications",
-        "Added data export functionality (CSV/PDF) for income and expense data",
-        "Created multi-language support for global accessibility"
-      ],
-      demoUrl: "https://cashcanvas.netlify.app/",
-      githubUrl: "https://github.com/seymourpublic/budgeting-app"
-    },
-    {
-      title: "FireDrop API",
-      description: "A lightweight and scalable file upload API built for seamless file management and storage.",
-      technologies: ["Node.js", "Express.js", "Firebase Storage", "REST API"],
-      features: [
-        "Developed file upload system supporting multiple file types with 50MB size limit",
-        "Implemented automatic thumbnail generation for image files",
-        "Created secure file deletion functionality",
-        "Built with CORS support for frontend integration",
-        "Integrated with Firebase Storage for reliable cloud storage"
-      ],
-      demoUrl: "https://firedrop-api.onrender.com",
-      githubUrl: "https://github.com/seymourpublic/firedrop-api",
-      apiDocs: true
-    },
-    {
-      title: "Random Data Generator API",
-      description: "An API providing fake data for testing and development purposes with support for various data types.",
-      technologies: ["Node.js", "Express.js", "REST API"],
-      features: [
-        "Built endpoints for generating random user profiles with avatars",
-        "Implemented random financial transaction generation",
-        "Created custom data generation for emails, addresses, company names, and more",
-        "Developed support for bulk data generation",
-        "Designed for easy integration with testing environments"
-      ],
-      demoUrl: "https://random-data-api-r4pp.onrender.com/api/users/random",
-      githubUrl: "https://github.com/seymourpublic/random-data-api",
-      apiDocs: true
-    },
-    
-    {
-      title: "Web Scraper / Python and Data Analysis",
-      description: "A Python-based web scraper for collecting and analyzing product pricing data.",
-      technologies: ["Python", "Data Analysis", "Web Scraping"],
-      features: [
-        "Developed a Python-based web scraper to collect and store product prices from multiple websites",
-        "Analyzed & visualized data to track pricing trends and fluctuations"
-      ],
-      githubUrl: "https://github.com/seymourpublic/scraper"
-    }
-  ];
-
-  // Function to toggle demo view
-  const toggleDemo = (index) => {
-    if (activeDemo === index) {
-      setActiveDemo(null);
-    } else {
-      setActiveDemo(index);
-    }
-  };
+  const filtered = activeFilter === 'All'
+    ? projects
+    : projects.filter(p => p.category === activeFilter);
 
   return (
     <section id="projects" className="projects">
       <div className="container">
-        <motion.h2 
-          className="section-title text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          Projects
-        </motion.h2>
-        
-        {/* VersaBlog Project Group */}
         <motion.div
-          className="project-group"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.8, ease }}
+          className="projects-header"
         >
-          
+          <div className="projects-title-block">
+            <h2 className="projects-heading">Featured Work</h2>
+            <p className="projects-subtitle">Selected work shipping products, building APIs, and moving data</p>
+          </div>
+
+          <div className="filter-tabs">
+            {FILTERS.map(f => (
+              <button
+                key={f}
+                className={`filter-tab ${activeFilter === f ? 'filter-tab--active' : ''}`}
+                onClick={() => setActiveFilter(f)}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </motion.div>
-        
-        <div className="projects-grid">
-          {projects.map((project, index) => (
-            <motion.div 
-              key={index}
-              className="project-card-container"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <ProjectCard project={project} />
-              
-              {/* Demo controls */}
-              <div className="project-actions">
-                {project.demoUrl && (
-                  <button 
-                    className="demo-btn"
-                    onClick={() => toggleDemo(index)}
-                  >
-                    {activeDemo === index ? "Hide Demo" : "Show Demo"}
-                  </button>
-                )}
-                
-                {project.githubUrl && (
-                  <a 
-                    href={project.githubUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="github-btn"
-                  >
-                    View Code
-                  </a>
-                )}
-              </div>
-              
-              {/* Demo iframe display */}
-              {activeDemo === index && project.demoUrl && (
-                <motion.div 
-                  className="demo-container"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="demo-header">
-                    <h4>{project.apiDocs ? "API Documentation" : "Live Demo"}</h4>
-                    <button 
-                      className="close-demo-btn"
-                      onClick={() => setActiveDemo(null)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                  <iframe 
-                    src={project.demoUrl}
-                    title={`${project.title} demo`}
-                    className="demo-iframe"
-                    sandbox="allow-scripts allow-same-origin"
-                    loading="lazy"
-                  ></iframe>
-                </motion.div>
-              )}
-            </motion.div>
-          ))}
-        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeFilter}
+            className="projects-grid"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            {filtered.map((project, i) => (
+              <ProjectCard
+                key={project.title}
+                project={project}
+                index={i}
+                globalIndex={projects.indexOf(project)}
+              />
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <style jsx>{`
         .projects {
-          background-color: var(--white);
-          padding: 4rem 0;
+          background: var(--bg);
+          border-top: 1px solid var(--border);
+          border-bottom: 1px solid var(--border);
         }
 
-        .section-title {
-          margin-bottom: 1.5rem;
+        .projects-header {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-bottom: 4rem;
+          gap: 2rem;
+          flex-wrap: wrap;
         }
 
-        .project-group {
-          margin-bottom: 2rem;
-          padding-bottom: 1rem;
-          border-bottom: 1px solid #eaeaea;
-        }
-
-        .group-title {
-          font-size: 1.5rem;
-          color: var(--primary-color, #3498db);
+        .projects-heading {
+          font-size: clamp(2rem, 4vw, 3rem);
+          font-weight: 700;
+          color: var(--text);
           margin-bottom: 0.5rem;
+          letter-spacing: -0.02em;
         }
 
-        .group-description {
-          color: var(--text, #555);
-          max-width: 800px;
-          line-height: 1.6;
+        .projects-subtitle {
+          font-size: 0.85rem;
+          color: var(--text-muted);
+          margin: 0;
+          max-width: 440px;
+          line-height: 1.7;
+        }
+
+        .filter-tabs {
+          display: flex;
+          gap: 0.25rem;
+          flex-shrink: 0;
+        }
+
+        .filter-tab {
+          font-family: 'Inter', sans-serif;
+          font-size: 0.75rem;
+          font-weight: 500;
+          letter-spacing: 0.04em;
+          padding: 0.55rem 1.25rem;
+          background: transparent;
+          color: var(--text-muted);
+          border: 1px solid var(--border);
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .filter-tab:hover {
+          color: var(--text);
+          border-color: var(--border-strong);
+        }
+
+        .filter-tab--active {
+          background: var(--text);
+          color: var(--bg);
+          border-color: var(--text);
+        }
+
+        .filter-tab--active:hover {
+          background: var(--text);
+          color: var(--bg);
         }
 
         .projects-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-          gap: 2rem;
-          margin-top: 2rem;
-        }
-
-        .project-card-container {
-          display: flex;
-          flex-direction: column;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          background-color: #fff;
-          transition: transform 0.3s ease;
-        }
-
-        .project-card-container:hover {
-          transform: translateY(-5px);
-        }
-
-        .project-actions {
-          display: flex;
-          padding: 1rem;
-          gap: 1rem;
-          border-top: 1px solid #eaeaea;
-        }
-
-        .demo-btn, .github-btn {
-          padding: 0.5rem 1rem;
-          border-radius: 4px;
-          font-weight: 500;
-          cursor: pointer;
-          text-align: center;
-          transition: all 0.3s ease;
-          flex: 1;
-        }
-
-        .demo-btn {
-          background-color: var(--primary-color, #3498db);
-          color: white;
-          border: none;
-        }
-
-        .demo-btn:hover {
-          background-color: var(--primary-dark, #2980b9);
-        }
-
-        .github-btn {
-          background-color: #f8f9fa;
-          color: #333;
-          border: 1px solid #ddd;
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .github-btn:hover {
-          background-color: #eaeaea;
-        }
-
-        .demo-container {
-          width: 100%;
-          border-top: 1px solid #eaeaea;
-          overflow: hidden;
-        }
-
-        .demo-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0.75rem 1rem;
-          background-color: #f8f9fa;
-        }
-
-        .demo-header h4 {
-          margin: 0;
-          font-size: 0.9rem;
-          font-weight: 500;
-        }
-
-        .close-demo-btn {
-          background: none;
-          border: none;
-          font-size: 1.5rem;
-          cursor: pointer;
-          color: #555;
-          padding: 0;
-          line-height: 1;
-        }
-
-        .demo-iframe {
-          width: 100%;
-          height: 400px;
-          border: none;
-          background-color: #fff;
+          grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+          gap: 1.5rem;
         }
 
         @media (max-width: 768px) {
-          .projects-grid {
-            grid-template-columns: 1fr;
+          .projects-header {
+            flex-direction: column;
+            align-items: flex-start;
           }
 
-          .demo-iframe {
-            height: 300px;
+          .projects-grid {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>

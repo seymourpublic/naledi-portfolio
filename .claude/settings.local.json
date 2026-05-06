@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Recurse -Path \"C:\\\\Users\\\\naled\\\\Desktop\\\\naledi-portfolio\" -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "WebFetch(domain:www.lightshiprv.com)",
+      "Bash(npm start *)",
+      "WebFetch(domain:ssscript.app)",
+      "WebFetch(domain:designbybrandin.com)",
+      "Bash(npx react-scripts *)"
+    ]
+  }
+}

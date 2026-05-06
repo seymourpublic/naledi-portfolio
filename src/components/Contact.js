@@ -1,172 +1,128 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+const ease = [0.22, 1, 0.36, 1];
+
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyEmail = (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText('naledisandamela@gmail.com').then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setIsLoading(true);
     try {
-      const response = await fetch('https://formspree.io/f/xpwdwdkr', {  
+      const res = await fetch('https://formspree.io/f/xpwdwdkr', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-  
-      if (response.ok) {
-        console.log('Message sent successfully');
+      if (res.ok) {
         setIsSubmitted(true);
-        setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: ''
-        });
-      } else {
-        console.error('Form submission error');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setTimeout(() => setIsSubmitted(false), 5000);
       }
-    } catch (error) {
-      console.error('Form submission error', error);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
-  
-    setTimeout(() => {
-      setIsSubmitted(false);
-    }, 3000);
   };
-  
 
   return (
     <section id="contact" className="contact">
       <div className="container">
-        <motion.h2 
-          className="section-title text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          Contact Me
-        </motion.h2>
-        <div className="contact-container">
-          <motion.div 
-            className="contact-info"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+        <div className="contact-grid">
+          <motion.div
+            className="contact-left"
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.8, ease }}
           >
-            <h3>Get In Touch</h3>
-            <p>
-              I'm currently available for freelance work and full-time positions. 
-              Feel free to reach out if you have any questions or want to work together.
+            <span className="section-tag">Contact</span>
+            <h2 className="contact-heading">New Business<br />Inquiries</h2>
+            <p className="contact-body">
+              Currently available for freelance work and full-time positions.
+              Reach out if you have a project in mind or want to work together.
             </p>
+
             <div className="contact-details">
-              <div className="contact-item">
-                <div className="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4>Email</h4>
-                  <p>naledisandamela@gmail.com</p>
-                </div>
+              <div className="contact-detail">
+                <span className="detail-label">Email</span>
+                <a
+                  href="mailto:naledisandamela@gmail.com"
+                  className={`detail-value detail-email${copied ? ' detail-email--copied' : ''}`}
+                  onClick={copyEmail}
+                  title="Click to copy"
+                >
+                  {copied ? 'Copied!' : 'naledisandamela@gmail.com'}
+                </a>
               </div>
-              <div className="contact-item">
-                <div className="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4>Location</h4>
-                  <p>Vereeniging, Gauteng</p>
-                </div>
+              <div className="contact-detail">
+                <span className="detail-label">Location</span>
+                <span className="detail-value">Johannesburg, Gauteng</span>
+              </div>
+              <div className="contact-detail">
+                <span className="detail-label">Availability</span>
+                <span className="detail-value">Open to opportunities</span>
               </div>
             </div>
           </motion.div>
-          <motion.div 
-            className="contact-form"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+
+          <motion.div
+            className="contact-right"
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.8, ease, delay: 0.12 }}
           >
             {isSubmitted ? (
-              <div className="success-message">
-                <div className="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h4>Message Sent Successfully!</h4>
+              <div className="success-box">
+                <span className="success-check">✓</span>
+                <h4>Message sent.</h4>
                 <p>I'll get back to you as soon as possible.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="name">Name</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
+              <form onSubmit={handleSubmit} className="contact-form">
+                <div className="form-row">
+                  <div className="form-field">
+                    <label htmlFor="name">Name</label>
+                    <input id="name" name="name" type="text" value={formData.name}
+                      onChange={handleChange} required placeholder="Your name" />
+                  </div>
+                  <div className="form-field">
+                    <label htmlFor="email">Email</label>
+                    <input id="email" name="email" type="email" value={formData.email}
+                      onChange={handleChange} required placeholder="your@email.com" />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="email">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
+                <div className="form-field">
                   <label htmlFor="subject">Subject</label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                  />
+                  <input id="subject" name="subject" type="text" value={formData.subject}
+                    onChange={handleChange} required placeholder="What's this about?" />
                 </div>
-                <div className="form-group">
+                <div className="form-field">
                   <label htmlFor="message">Message</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows="5"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
+                  <textarea id="message" name="message" rows="6" value={formData.message}
+                    onChange={handleChange} required placeholder="Tell me about your project..." />
                 </div>
-                <button type="submit" className="btn">Send Message</button>
+                <button type="submit" className="btn" disabled={isLoading}>
+                  {isLoading ? 'Sending...' : 'Send Message'}
+                </button>
               </form>
             )}
           </motion.div>
@@ -175,113 +131,169 @@ const Contact = () => {
 
       <style jsx>{`
         .contact {
-          background-color: #f5f7fa;
+          background: var(--bg-2);
+          border-top: 1px solid var(--border);
         }
 
-        .contact-container {
-          display: flex;
-          gap: 3rem;
-          max-width: 1000px;
-          margin: 0 auto;
+        .contact-grid {
+          display: grid;
+          grid-template-columns: 1fr 1.5fr;
+          gap: 6rem;
+          align-items: start;
         }
 
-        .contact-info,
-        .contact-form {
-          flex: 1;
+        .contact-heading {
+          font-size: clamp(2rem, 3.5vw, 2.8rem);
+          font-weight: 700;
+          color: var(--text);
+          margin-bottom: 1.25rem;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
         }
 
-        .contact-info h3 {
-          margin-bottom: 1rem;
+        .contact-body {
+          font-size: 0.9rem;
+          color: var(--text-muted);
+          line-height: 1.85;
+          margin-bottom: 2.5rem;
+          max-width: 340px;
         }
 
         .contact-details {
-          margin-top: 2rem;
+          border-top: 1px solid var(--border);
         }
 
-        .contact-item {
+        .contact-detail {
           display: flex;
-          align-items: flex-start;
-          margin-bottom: 1.5rem;
+          flex-direction: column;
+          gap: 0.3rem;
+          padding: 1.25rem 0;
+          border-bottom: 1px solid var(--border);
         }
 
-        .contact-item .icon {
-          width: 40px;
-          height: 40px;
-          margin-right: 1rem;
-          color: var(--primary-color);
+        .detail-label {
+          font-size: 0.62rem;
+          font-weight: 600;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--text-dim);
         }
 
-        .contact-item h4 {
-          margin-bottom: 0.3rem;
+        .detail-value {
+          font-size: 0.88rem;
+          color: var(--text-muted);
+          transition: color 0.2s ease;
         }
 
-        .contact-item p {
-          margin: 0;
-          color: var(--text-light);
+        a.detail-value:hover {
+          color: var(--text);
         }
 
-        form {
-          background-color: var(--white);
-          padding: 2rem;
-          border-radius: 8px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        .detail-email {
+          cursor: copy;
+          transition: color 0.2s ease;
         }
 
-        .form-group {
-          margin-bottom: 1.5rem;
+        .detail-email--copied {
+          color: #22c55e;
+        }
+
+        /* Form */
+        .contact-form {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+        }
+
+        .form-field {
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 2rem;
         }
 
         label {
-          display: block;
-          margin-bottom: 0.5rem;
-          font-weight: 500;
+          font-size: 0.62rem;
+          font-weight: 600;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--text-dim);
+          margin-bottom: 0.75rem;
         }
 
-        input,
-        textarea {
-          width: 100%;
-          padding: 0.8rem;
-          border: 1px solid #e5e7eb;
-          border-radius: 5px;
-          font-family: 'Poppins', sans-serif;
-          font-size: 1rem;
-        }
-
-        input:focus,
-        textarea:focus {
+        input, textarea {
+          background: transparent;
+          border: none;
+          border-bottom: 1px solid var(--border);
           outline: none;
-          border-color: var(--primary-color);
-          box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+          font-family: 'Inter', sans-serif;
+          font-size: 0.88rem;
+          color: var(--text);
+          padding: 0.5rem 0 0.75rem;
+          resize: none;
+          line-height: 1.6;
+          transition: border-color 0.2s ease;
         }
 
-        .success-message {
-          background-color: #ecfdf5;
-          border: 1px solid #10b981;
-          padding: 2rem;
-          border-radius: 8px;
-          text-align: center;
-          height: 100%;
+        input::placeholder, textarea::placeholder {
+          color: var(--text-dim);
+        }
+
+        input:focus, textarea:focus {
+          border-bottom-color: var(--border-strong);
+        }
+
+        .btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        /* Success */
+        .success-box {
           display: flex;
           flex-direction: column;
-          justify-content: center;
           align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 4rem 2rem;
+          border: 1px solid var(--border);
+          min-height: 300px;
+          background: var(--surface);
         }
 
-        .success-message .icon {
-          width: 60px;
-          height: 60px;
-          color: #10b981;
+        .success-check {
+          font-size: 2rem;
+          color: var(--text-muted);
           margin-bottom: 1rem;
         }
 
-        .success-message h4 {
+        .success-box h4 {
+          font-size: 1.4rem;
+          font-weight: 700;
+          color: var(--text);
           margin-bottom: 0.5rem;
-          color: #10b981;
         }
 
-        @media (max-width: 768px) {
-          .contact-container {
-            flex-direction: column;
+        .success-box p {
+          font-size: 0.88rem;
+          color: var(--text-muted);
+          margin: 0;
+        }
+
+        @media (max-width: 900px) {
+          .contact-grid {
+            grid-template-columns: 1fr;
+            gap: 4rem;
+          }
+
+          .form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
           }
         }
       `}</style>
