@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { projects } from '../data/projects';
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -15,115 +17,6 @@ const CARD_GRADIENTS = [
 ];
 
 const FILTERS = ['All', 'Frontend', 'Backend', 'Data'];
-
-const projects = [
-  {
-    title: 'BMO Virtual AI Assistant',
-    category: 'Frontend',
-    description: 'A conversational AI assistant with voice capability, allowing users to interact naturally via the Web Speech API.',
-    technologies: ['Next.js', 'Apollo Client', 'React', 'GraphQL', 'Tailwind CSS'],
-    features: [
-      'Speech-to-Text via Web Speech API for natural voice interaction',
-      'Content filtering and robust search functionality',
-      'Responsive design for optimal experience across devices',
-      'SEO-optimised page structure with dynamic metadata',
-    ],
-    demoUrl: 'https://bmo-lcd5.vercel.app/',
-    githubUrl: 'https://github.com/seymourpublic/BMO',
-  },
-  {
-    title: 'VersaBlog – Frontend',
-    category: 'Frontend',
-    description: 'The public-facing frontend of the VersaBlog platform, offering a dynamic reading experience with content filtering and search.',
-    technologies: ['Next.js', 'Apollo Client', 'React', 'GraphQL', 'Tailwind CSS'],
-    features: [
-      'Dynamic blog frontend with real-time content updates via GraphQL',
-      'Content filtering and robust search functionality',
-      'SEO-optimised page structure with dynamic metadata',
-    ],
-    demoUrl: 'https://versablogdemo.netlify.app/',
-    githubUrl: 'https://github.com/seymourpublic/versa-blog-frontend',
-  },
-  {
-    title: 'VersaBlog – Admin Dashboard',
-    category: 'Frontend',
-    description: 'A powerful admin interface for the VersaBlog platform, enabling content creators to manage all aspects of their blog.',
-    technologies: ['React', 'Apollo Client', 'GraphQL', 'React Hook Form', 'Draft.js'],
-    features: [
-      'Rich text editor for blog post creation and editing',
-      'Category and tag management system',
-      'Post status control (draft, published, archived)',
-    ],
-    demoUrl: 'https://versa-blog-admin.netlify.app/',
-    githubUrl: 'https://github.com/seymourpublic/my-blog-admin',
-  },
-  {
-    title: 'VersaBlog – Backend API',
-    category: 'Backend',
-    description: 'The GraphQL API powering the VersaBlog platform, handling data management, authentication, and content delivery.',
-    technologies: ['Node.js', 'Express.js', 'GraphQL', 'MongoDB', 'Mongoose', 'JWT'],
-    features: [
-      'Modular GraphQL API with Apollo Server',
-      'Secure authentication system with JWT',
-      'Scalable architecture with separation of concerns',
-    ],
-    demoUrl: 'https://versablog-backend.onrender.com/graphql/v1',
-    githubUrl: 'https://github.com/seymourpublic/VersaBlog-backend',
-    apiDocs: true,
-  },
-  {
-    title: 'Budgeting App',
-    category: 'Frontend',
-    description: 'A responsive budgeting application to help users manage finances, track income and expenses, and set savings goals.',
-    technologies: ['React', 'Tailwind CSS', 'Framer Motion', 'Chart.js', 'react-i18next'],
-    features: [
-      'Income and expense tracking with Pie and Line Chart visualisations',
-      'Savings goals with progress tracking',
-      'Multi-language support and CSV/PDF export',
-    ],
-    demoUrl: 'https://cashcanvas.netlify.app/',
-    githubUrl: 'https://github.com/seymourpublic/budgeting-app',
-  },
-  {
-    title: 'FireDrop API',
-    category: 'Backend',
-    description: 'A lightweight and scalable file upload API built for seamless file management and cloud storage.',
-    technologies: ['Node.js', 'Express.js', 'Firebase Storage', 'REST API'],
-    features: [
-      'File upload supporting multiple types with 50MB limit',
-      'Automatic thumbnail generation for images',
-      'Integrated with Firebase Storage for cloud storage',
-    ],
-    demoUrl: 'https://firedrop-api.onrender.com',
-    githubUrl: 'https://github.com/seymourpublic/firedrop-api',
-    apiDocs: true,
-  },
-  {
-    title: 'Random Data Generator API',
-    category: 'Backend',
-    description: 'An API providing fake data for testing and development, supporting various data types in bulk.',
-    technologies: ['Node.js', 'Express.js', 'REST API'],
-    features: [
-      'Random user profiles, transactions, emails, and addresses',
-      'Bulk data generation support',
-      'Designed for easy testing environment integration',
-    ],
-    demoUrl: 'https://random-data-api-r4pp.onrender.com/api/users/random',
-    githubUrl: 'https://github.com/seymourpublic/random-data-api',
-    apiDocs: true,
-  },
-  {
-    title: 'Web Scraper & Data Analysis',
-    category: 'Data',
-    description: 'A Python-based web scraper for collecting and analysing product pricing data across multiple sources.',
-    technologies: ['Python', 'Data Analysis', 'Web Scraping'],
-    features: [
-      'Scrapes and stores product prices from multiple websites',
-      'Visualises pricing trends and fluctuations over time',
-    ],
-    githubUrl: 'https://github.com/seymourpublic/scraper',
-  },
-];
 
 const ProjectCard = ({ project, index, globalIndex }) => {
   const [demoOpen, setDemoOpen] = useState(false);
@@ -153,10 +46,15 @@ const ProjectCard = ({ project, index, globalIndex }) => {
         )}
         <span className="proj-num-bg">{String(globalIndex + 1).padStart(2, '0')}</span>
         <span className="proj-category-tag">{project.category}</span>
+        <Link to={`/work/${project.slug}`} className="proj-preview-hover">
+          View Case Study →
+        </Link>
       </div>
 
       <div className="proj-body">
-        <h3 className="proj-title">{project.title}</h3>
+        <Link to={`/work/${project.slug}`} className="proj-title-link">
+          <h3 className="proj-title">{project.title}</h3>
+        </Link>
         <p className="proj-desc">{project.description}</p>
         <div className="proj-tags">
           {project.technologies.map((t, i) => (
@@ -245,7 +143,29 @@ const ProjectCard = ({ project, index, globalIndex }) => {
         }
 
         .proj-card:hover .proj-screenshot {
-          filter: brightness(0.45);
+          filter: brightness(0.4);
+        }
+
+        .proj-preview-hover {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.72rem;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--text);
+          background: rgba(0, 0, 0, 0.45);
+          opacity: 0;
+          transition: opacity 0.25s ease;
+          z-index: 3;
+          text-decoration: none;
+        }
+
+        .proj-card:hover .proj-preview-hover {
+          opacity: 1;
         }
 
         .proj-num-bg {
@@ -259,6 +179,7 @@ const ProjectCard = ({ project, index, globalIndex }) => {
           letter-spacing: -0.04em;
           user-select: none;
           pointer-events: none;
+          z-index: 1;
         }
 
         .proj-category-tag {
@@ -271,7 +192,7 @@ const ProjectCard = ({ project, index, globalIndex }) => {
           border: 1px solid var(--border);
           padding: 0.25rem 0.7rem;
           position: relative;
-          z-index: 1;
+          z-index: 2;
         }
 
         .proj-body {
@@ -279,12 +200,23 @@ const ProjectCard = ({ project, index, globalIndex }) => {
           flex: 1;
         }
 
+        .proj-title-link {
+          text-decoration: none;
+          display: block;
+          margin-bottom: 0.75rem;
+        }
+
         .proj-title {
           font-size: 1.15rem;
           font-weight: 700;
           color: var(--text);
-          margin-bottom: 0.75rem;
           line-height: 1.3;
+          transition: color 0.2s ease;
+          margin: 0;
+        }
+
+        .proj-title-link:hover .proj-title {
+          color: var(--accent);
         }
 
         .proj-desc {

@@ -9,6 +9,7 @@ const education = [
     institution: 'Eduvos',
     location: 'Potchefstroom, North-West',
     period: 'Feb 2023 – Dec 2023',
+    year: '2023',
     highlights: [
       'Golden Key International Honour Society — Top 15% of the class.',
       'Data Mining Project: Predicted life expectancy and diabetes outcomes using Python.',
@@ -20,6 +21,7 @@ const education = [
     institution: 'NWU',
     location: 'Potchefstroom, North-West',
     period: 'Feb 2019 – Dec 2022',
+    year: '2022',
     highlights: [],
   },
 ];
@@ -38,33 +40,34 @@ const Education = () => (
         <h2 className="edu-heading">Education</h2>
       </motion.div>
 
-      <div className="edu-list">
+      <div className="edu-timeline">
         {education.map((edu, i) => (
           <motion.div
             key={i}
-            className="edu-entry"
+            className="edu-node"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.7, ease, delay: i * 0.12 }}
           >
-            <div className="edu-top">
-              <div className="edu-left">
-                <h3 className="edu-degree">{edu.degree}</h3>
-                <span className="edu-institution">{edu.institution}</span>
-              </div>
-              <div className="edu-right">
-                <span className="edu-period">{edu.period}</span>
+            <div className={`edu-dot ${i === 0 ? 'edu-dot--active' : ''}`} />
+
+            <div className="edu-content">
+              <div className="edu-meta-row">
+                <span className="edu-year">{edu.period}</span>
                 <span className="edu-location">{edu.location}</span>
               </div>
+              <h3 className="edu-degree">{edu.degree}</h3>
+              <span className="edu-institution">{edu.institution}</span>
+
+              {edu.highlights.length > 0 && (
+                <ul className="edu-highlights">
+                  {edu.highlights.map((h, j) => (
+                    <li key={j}>{h}</li>
+                  ))}
+                </ul>
+              )}
             </div>
-            {edu.highlights.length > 0 && (
-              <ul className="edu-highlights">
-                {edu.highlights.map((h, j) => (
-                  <li key={j}>{h}</li>
-                ))}
-              </ul>
-            )}
           </motion.div>
         ))}
       </div>
@@ -87,78 +90,105 @@ const Education = () => (
         color: var(--text);
       }
 
-      .edu-list {
-        border-top: 1px solid var(--border);
+      .edu-timeline {
+        position: relative;
+        padding-left: 2.5rem;
       }
 
-      .edu-entry {
-        padding: 2.75rem 0;
-        border-bottom: 1px solid var(--border);
+      .edu-timeline::before {
+        content: '';
+        position: absolute;
+        left: 6px;
+        top: 10px;
+        bottom: 10px;
+        width: 1px;
+        background: var(--border);
       }
 
-      .edu-top {
+      .edu-node {
+        position: relative;
+        padding-bottom: 3.5rem;
+      }
+
+      .edu-node:last-child {
+        padding-bottom: 0;
+      }
+
+      .edu-dot {
+        position: absolute;
+        left: -2.5rem;
+        top: 8px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        border: 1px solid var(--border-strong);
+        background: var(--bg-2);
+        transform: translateX(0.5px);
+      }
+
+      .edu-dot--active {
+        border-color: var(--accent);
+        background: rgba(34, 197, 94, 0.12);
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
+      }
+
+      .edu-content {
+        padding-top: 2px;
+      }
+
+      .edu-meta-row {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        gap: 2rem;
-        margin-bottom: 1.5rem;
+        align-items: baseline;
+        gap: 1rem;
+        margin-bottom: 0.6rem;
         flex-wrap: wrap;
       }
 
-      .edu-left {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
+      .edu-year {
+        font-size: 0.72rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        letter-spacing: 0.04em;
+      }
+
+      .edu-location {
+        font-size: 0.68rem;
+        color: var(--text-dim);
       }
 
       .edu-degree {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         font-weight: 700;
         color: var(--text);
-        margin: 0;
+        margin: 0 0 0.3rem;
         line-height: 1.3;
       }
 
       .edu-institution {
-        font-size: 0.72rem;
+        display: block;
+        font-size: 0.7rem;
         font-weight: 600;
         letter-spacing: 0.16em;
         text-transform: uppercase;
         color: var(--text-muted);
-      }
-
-      .edu-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0.25rem;
-        flex-shrink: 0;
-      }
-
-      .edu-period {
-        font-size: 0.8rem;
-        font-weight: 500;
-        color: var(--text-muted);
-      }
-
-      .edu-location {
-        font-size: 0.74rem;
-        color: var(--text-dim);
+        margin-bottom: 1.25rem;
       }
 
       .edu-highlights {
         list-style: none;
         display: flex;
         flex-direction: column;
-        gap: 0.65rem;
+        gap: 0.6rem;
         padding-left: 0;
+        margin: 0;
       }
 
       .edu-highlights li {
-        font-size: 0.87rem;
+        font-size: 0.86rem;
         color: var(--text-muted);
         line-height: 1.75;
-        padding-left: 1.2rem;
+        padding-left: 1.1rem;
         position: relative;
       }
 
@@ -166,14 +196,15 @@ const Education = () => (
         content: '→';
         position: absolute;
         left: 0;
-        color: var(--text-dim);
-        font-size: 0.72rem;
-        top: 0.1rem;
+        color: var(--accent);
+        font-size: 0.7rem;
+        top: 0.12rem;
       }
 
       @media (max-width: 640px) {
-        .edu-right {
-          align-items: flex-start;
+        .edu-meta-row {
+          flex-direction: column;
+          gap: 0.2rem;
         }
       }
     `}</style>

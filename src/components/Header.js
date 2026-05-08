@@ -30,10 +30,10 @@ const Header = () => {
   };
 
   const navLinks = [
+    { id: 'services', label: 'Services' },
+    { id: 'experience', label: 'Experience' },
     { id: 'projects', label: 'Work' },
     { id: 'skills', label: 'Expertise' },
-    { id: 'experience', label: 'Experience' },
-    { id: 'about', label: 'About' },
     { id: 'contact', label: 'Contact' },
   ];
 
@@ -162,7 +162,7 @@ const Header = () => {
         }
 
         .header--scrolled {
-          background: rgba(9, 9, 9, 0.9);
+          background: var(--header-scrolled-bg);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           border-bottom-color: var(--border);

@@ -85,7 +85,7 @@ const Experience = () => (
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.7, ease, delay: i * 0.1 }}
+            transition={{ duration: 0.7, ease, delay: i * 0.08 }}
           >
             <div className="exp-top">
               <div className="exp-left">
@@ -168,7 +168,7 @@ const Experience = () => (
         font-weight: 600;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: #22c55e;
+        color: var(--accent);
         border: 1px solid rgba(34, 197, 94, 0.35);
         padding: 0.2rem 0.55rem;
         line-height: 1;
