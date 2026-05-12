@@ -8,7 +8,9 @@
       "Bash(npm start *)",
       "WebFetch(domain:ssscript.app)",
       "WebFetch(domain:designbybrandin.com)",
-      "Bash(npx react-scripts *)"
+      "Bash(npx react-scripts *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
